@@ -5,19 +5,22 @@ use PDO;
 
 class Model {
 
+    private $pdo;
+
     public function __construct()
     {
 
-        $host = getenv('HOST');
-        $user = getenv('USER');
-        $password = getenv('PASSWORD');
-        $dbname = getenv('DBNAME');
+        $host=HOST;
+        $user=USER;
+        $password=PASSWORD;
+        $dbname=DBNAME;
 
         $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
 
         try {
 
-            $this->pdo = new PDO($dsn, $user, $password);
+            $this->pdo = new PDO($dsn, $user, $password, array(
+                PDO::ATTR_PERSISTENT => true));
 
             //set preferences in the attributes - E.g default fetch mode to get object srather than an array
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

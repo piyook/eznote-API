@@ -5,6 +5,8 @@ use Src\Utils\Model;
 
 class Note extends Model
 {
+    protected $database;
+    
     public function __construct()
     {
         $this->database = new Model;

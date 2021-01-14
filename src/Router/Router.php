@@ -65,7 +65,7 @@ class Router {
         $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $this->requestMethod = $_SERVER["REQUEST_METHOD"];
         $this->uriParts = explode( '/', $this->uri );
-    
+
         foreach ($this->routes as $route) {
             if ($this->isRequestMethod($route['method']) &&
                $this->isRequestRoute($route['expression']))
@@ -76,10 +76,9 @@ class Router {
         }
         
         if (! $this->validRoute) {
-            header("HTTP/1.1 404 Not Found");
+            // header("HTTP/1.1 404 Not Found");
             exit();
         }
-
     }
 
     private function isRequestMethod($method){
@@ -91,5 +90,3 @@ class Router {
     }
 
 }
-
-?>

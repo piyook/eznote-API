@@ -19,3 +19,5 @@ $board = new BoardController;
 $methodName = $router->validRoute['controller_method'];
 
 $board->$methodName($router->uriParts);
+
+?>
