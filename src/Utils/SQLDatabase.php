@@ -3,7 +3,7 @@
 namespace Src\Utils;
 use PDO;
 
-class Model {
+class SQLDatabase {
 
     private $pdo;
 

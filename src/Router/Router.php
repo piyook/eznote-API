@@ -10,6 +10,21 @@ class Router {
     private $uri;
      // define all valid endpoints - this will act as a simple router
     private $routes = [
+        'Login' => [
+            'method' => 'POST',
+            'expression' => '/^\/login\/?$/',
+            'controller_method' => 'login'
+        ],
+        'Register' => [
+            'method' => 'POST',
+            'expression' => '/^\/register\/?$/',
+            'controller_method' => 'register'
+        ],
+        'Register' => [
+            'method' => 'POST',
+            'expression' => '/^\/refresh\/?$/',
+            'controller_method' => 'refresh'
+        ],
         'Show-All-Boards' => [
             'method' => 'GET',
             'expression' => '/^\/api\/?$/',
@@ -74,11 +89,13 @@ class Router {
                 break;
             }
         }
-        
+
+
         if (! $this->validRoute) {
             // header("HTTP/1.1 404 Not Found");
             exit();
         }
+  
     }
 
     private function isRequestMethod($method){

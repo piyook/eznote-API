@@ -1,15 +1,15 @@
 <?php
 
 namespace Src\Models;
-use Src\Utils\Model;
+use Src\Utils\SQLDatabase;
 
-class Board extends Model
+class Board extends SQLDatabase
 {
     protected $database;
     
     public function __construct()
     {
-        $this->database = new Model;
+        $this->database = new SQLDatabase;
     }
 
 
