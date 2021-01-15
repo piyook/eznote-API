@@ -3,32 +3,36 @@
 namespace Src\Models;
 use Src\Utils\SQLDatabase;
 
-class Board extends SQLDatabase
+class Board
 {
     protected $database;
+    protected $userId;
     
-    public function __construct()
+    public function __construct($validUserId)
     {
         $this->database = new SQLDatabase;
+        $this->userId = $validUserId;
     }
 
 
     public function fetchAllBoards()
     {
-        $sql = 'SELECT * FROM noticeboards';
-        return $this->database->execute($sql, []);
+        $sql = 'SELECT * FROM noticeboards WHERE userId = :userId';
+        return $this->database->execute($sql, ['userId' => $this->userId]);
     }
 
     
     public function createBoard($data){
 
-        $sql =' INSERT INTO noticeboards(title, body, colour) 
-                VALUES (:title,:body,:colour)';
+        $sql =' INSERT INTO noticeboards(title, body, colour, userId) 
+                VALUES (:title,:body,:colour,:userId)';
 
         return $this->database->execute($sql, 
                         ['title' =>$data['title'], 
                         'body'=>$data['body'], 
-                        'colour'=>$data['colour']]);
+                        'colour'=>$data['colour'],
+                        'userId'=>$this->userId
+                        ]);
 
     }
 
@@ -41,23 +45,26 @@ class Board extends SQLDatabase
                 title=:title,
                 body=:body,
                 colour=:colour
-                WHERE id = :id
+                WHERE id = :id AND userId = :userId
                 ';
 
         return $this->database->execute($sql, 
              ['id' => $id, 
              'title' =>$data['title'], 
              'body'=>$data['body'], 
-             'colour'=>$data['colour']]);
+             'colour'=>$data['colour'],
+             'userId'=>$this->userId]);
 
     }
 
     public function deleteBoard($id)
     {
 
-        $sql = 'DELETE FROM noticeboards WHERE id = :id LIMIT 1';
+        $sql = 'DELETE FROM noticeboards WHERE id = :id AND userId = :userId LIMIT 1';
 
-        $this->database->execute($sql, ['id' => $id]);
+        $this->database->execute($sql, [
+            'id' => $id,
+            'userId'=>$this->userId]);
 
     }
 

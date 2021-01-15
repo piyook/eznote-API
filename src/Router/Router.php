@@ -20,7 +20,7 @@ class Router {
             'expression' => '/^\/register\/?$/',
             'controller_method' => 'register'
         ],
-        'Register' => [
+        'Refresh' => [
             'method' => 'POST',
             'expression' => '/^\/refresh\/?$/',
             'controller_method' => 'refresh'

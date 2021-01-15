@@ -2,25 +2,32 @@
 
 namespace Src\Controllers;
 
+use Src\Utils\InputHandler;
 use Src\Controllers\NoteController;
 use Src\Models\Board;
+
 
 
 class BoardController extends NoteController
 {
 
     protected $boards;
+    protected $userId;
+    protected $errorHandler;
 
-    function __construct()
+    function __construct($validUserId)
     {
-        $this->boards = new Board;
-        NoteController::__construct();
+        $this->boards = new Board($validUserId);
+        NoteController::__construct($validUserId);
     }
 
     public function newBoard()
     {
-        parse_str(file_get_contents("php://input"), $post_vars);
+     
         $post_vars = json_decode(file_get_contents("php://input"),true);
+        $required_vars = array("title","body","colour");
+
+        InputHandler::validateClientInput($post_vars, $required_vars);
 
         $this->boards->createBoard($post_vars);
         $data = $this->boards->fetchAllBoards();
@@ -36,13 +43,16 @@ class BoardController extends NoteController
 
     public function editBoard($uri)
     {
-        parse_str(file_get_contents("php://input"), $put_vars);
         $put_vars = json_decode(file_get_contents("php://input"),true);
+        $required_vars = array("title","body","colour");
+
+        InputHandler::validateClientInput($put_vars, $required_vars);
 
         $boardId = $uri[2];
+        
         $data = $this->boards->updateBoard($boardId, $put_vars);
-
         $data = $this->boards->fetchAllBoards();
+
         print_r($data);
     }
 

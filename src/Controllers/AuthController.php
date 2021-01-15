@@ -4,6 +4,7 @@ namespace Src\Controllers;
 
 use Src\Models\Auth;
 use \Firebase\JWT\JWT;
+use Src\Utils\InputHandler;
 
 class AuthController
 {
@@ -20,18 +21,25 @@ class AuthController
         parse_str(file_get_contents("php://input"), $post_vars);
         $post_vars = json_decode(file_get_contents("php://input"), true);
 
+       
+        InputHandler::validateAuthInput($post_vars);
+
         $this->auth->loginUser($post_vars);
+        
     }
 
     public function register()
     {
-
+    
         parse_str(file_get_contents("php://input"), $post_vars);
         $post_vars = json_decode(file_get_contents("php://input"), true);
+
+        InputHandler::validateAuthInput($post_vars);
 
         $post_vars['password'] = password_hash($post_vars['password'], PASSWORD_DEFAULT);
 
         $this->auth->registerUser($post_vars);
+        
     }
 
     public function authenticate(){
@@ -60,8 +68,9 @@ class AuthController
     
         try {
     
-            JWT::decode($jwt, $secret_key, array('HS256'));
-            return true;
+            $userData = JWT::decode($jwt, $secret_key, array('HS256'));
+            $userId = $userData->data->id;
+            return $userId;
     
         } catch (\exception $e){
             http_response_code(401);
@@ -69,7 +78,7 @@ class AuthController
                 "message" => "Access DENIED:",
                 "error" => $e->getMessage()
             ));
-            return false;
+            die();
     
         }      
 }
@@ -78,4 +87,9 @@ public function refresh(){
     echo "refresh";
 }
 
+
+
+
 }
+
+

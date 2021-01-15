@@ -5,7 +5,7 @@ namespace Src\Models;
 use Src\Utils\SQLDatabase;
 use \Firebase\JWT\JWT;
 
-class Auth extends SQLDatabase
+class Auth
 {
 
     protected $database;
@@ -100,7 +100,7 @@ class Auth extends SQLDatabase
                 $audience_claim = THE_AUDIENCE;
                 $issuedat_claim = time();
                 $notbefore_claim = $issuedat_claim + 1; // not  before in sec
-                $expire_claim = $issuedat_claim + 600; //expire time in sec
+                $expire_claim = $issuedat_claim + 900; //expire time in sec
                 $token = array(
                     'iss'=>$issuer_claim,
                     'aud' => $audience_claim,

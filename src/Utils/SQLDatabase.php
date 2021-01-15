@@ -46,8 +46,11 @@ class SQLDatabase {
             }
 
         catch(\Exception $e) {
-
-            return FALSE;
+            echo json_encode(array(
+                "message" => "DATABASE ERROR: PLEASE TRY AGAIN LATER",
+                "error" => $e->getMessage()
+            ));
+            die();
 }
     }
 

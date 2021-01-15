@@ -17,19 +17,21 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 $router = new Router;
 $auth = new AuthController;
-$board = new BoardController;
 
 $methodName = $router->validRoute['controller_method'];
 
 if($methodName === 'login' || $methodName === 'register' || $methodName=="refresh") {
     $auth->$methodName($router->uriParts);
 } else {
+
+    $validUserId = $auth->authenticate();
  
-    if (! $auth->authenticate()) {
+    if ( !$validUserId ) {
     header("HTTP/1.1 401 Unauthorized");
     exit('Unauthorized');
     }
 
+    $board = new BoardController($validUserId);
     $board->$methodName($router->uriParts);
 }
 

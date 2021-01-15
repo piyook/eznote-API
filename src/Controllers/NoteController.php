@@ -3,20 +3,24 @@
 namespace Src\Controllers;
 
 use Src\Models\Note;
+use Src\Utils\InputHandler;
 
 class NoteController {
 
     protected $notes;
 
-    function __construct()
+    function __construct($validUserId)
     {
-        $this->notes = new Note;
+        $this->notes = new Note($validUserId);
     }
 
     public function newNote($uri){
 
-        parse_str(file_get_contents("php://input"), $post_vars);
         $post_vars = json_decode(file_get_contents("php://input"),true);
+
+        $required_vars = array("title","body","colour","boardId");
+
+        InputHandler::validateClientInput($post_vars, $required_vars);
 
         $this->notes->createNote($post_vars);
         $data = $this->notes->fetchNotes($uri);
@@ -38,8 +42,11 @@ class NoteController {
 
     public function editNote($uri){
 
-        parse_str(file_get_contents("php://input"), $put_vars);
+    
         $put_vars = json_decode(file_get_contents("php://input"),true);
+        
+        $required_vars = array("title","body","colour","boardId");
+        InputHandler::validateClientInput($put_vars, $required_vars);
 
         $noteId = $uri[3];
 
@@ -57,4 +64,6 @@ class NoteController {
         $data = $this->notes->fetchNotes($uri);
         print_r($data);
     }
+
+    
 }

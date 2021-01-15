@@ -3,48 +3,56 @@
 namespace Src\Models;
 use Src\Utils\SQLDatabase;
 
-class Note extends SQLDatabase
+class Note
 {
     protected $database;
+    protected $userId;
     
-    public function __construct()
+    public function __construct($validUserId)
     {
         $this->database = new SQLDatabase;
+        $this->userId = $validUserId;
     }
 
 
     public function fetchNotes($uri)
     {
 
-        $sql = 'SELECT * FROM notes WHERE boardId = :id';
+        $sql = 'SELECT * FROM notes WHERE boardId = :id AND userId = :userId';
 
-        return $this->database->execute($sql, ['id' => $uri[2]]);
+        return $this->database->execute($sql, [
+            'id' => $uri[2],
+            'userId' => $this->userId
+            ]);
     }
 
     public function fetchOneNote($uri)
     {
 
         $sql = '    SELECT * FROM notes 
-                    WHERE boardId = :boardId AND id = :id';
+                    WHERE boardId = :boardId AND id = :id AND userId = :userId';
 
 
         return $this->database->execute($sql, [
                     'boardId'=>$uri[2], 
-                    'id' => $uri[3]
+                    'id' => $uri[3],
+                    'userId' => $this->userId
                     ]);
             
     }
 
     public function createNote($data){
 
-        $sql = '    INSERT INTO notes(title, boardId, body, colour) 
-                    VALUES (:title,:boardId, :body,:colour)';
+        $sql = '    INSERT INTO notes(title, boardId, body, colour, userId) 
+                    VALUES (:title,:boardId, :body,:colour, :userId)';
 
         return $this->database->execute($sql, [
             'title' =>$data['title'], 
             'boardId' => $data['boardId'], 
             'body'=>$data['body'], 
-            'colour'=>$data['colour'] ]);
+            'colour'=>$data['colour'],
+            'userId' => $this->userId
+             ]);
 
     }
 
@@ -56,23 +64,27 @@ class Note extends SQLDatabase
                 title=:title,
                 body=:body,
                 colour=:colour
-                WHERE id = :id
+                WHERE id = :id AND userId = :userId
                 ';
 
         return $this->database->execute($sql, [
             'title' =>$data['title'], 
             'body'=>$data['body'], 
             'colour'=>$data['colour'],
-            'id'=>$id 
+            'id'=>$id,
+            'userId' => $this->userId 
             ]);
     }
 
     public function deleteNote($id)
     {
 
-        $sql = 'DELETE FROM notes WHERE id = :id LIMIT 1';
+        $sql = 'DELETE FROM notes WHERE id = :id AND userId = :userId LIMIT 1';
 
-        $this->database->execute($sql, ['id' => $id]);
+        $this->database->execute($sql, [
+            'id' => $id,
+            'userId' => $this->userId
+            ]);
 
     }
 
