@@ -42,29 +42,40 @@ class AuthController
         
     }
 
+    public function refresh(){
+       
+        $validUserId = $this->validateCookie('refreshToken');
+
+        if(!$validUserId) { return false;}
+
+        $isBlacklisted = $this->auth->isTokenBlacklisted( $validUserId );
+
+        if ($isBlacklisted) {
+            http_response_code(401);
+            echo json_encode(array(
+                "message" => "Access DENIED:",
+            ));
+            die(); 
+        }
+        else {
+          
+            $userData = JWT::decode($_COOKIE['refreshToken'], SECRET_KEY, array('HS256'));
+          
+            $this->auth->refreshAccessToken( $userData->data);
+
+    }
+}
+
     public function authenticate(){
 
+       
+
+        if (!isset($_COOKIE['accessToken']) ) { 
+                        
+            return false;}
         $secret_key=SECRET_KEY;
         $jwt = null;
-    
-        // extract the token from the headers
-        if (! isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            return false;
-        }
-    
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
-    
-        //check bearer token header is sent
-        preg_match('/Bearer\s(\S+)/', $authHeader, $matches);
-    
-        if(! isset($matches[1])) {
-            return false;
-        }
-    
-        $arr = explode(" ", $authHeader);
-    
-    
-        $jwt  = $arr[1];
+        $jwt = $_COOKIE['accessToken'];
     
         try {
     
@@ -83,9 +94,32 @@ class AuthController
         }      
 }
 
-public function refresh(){
-    echo "refresh";
+function validateCookie($cookieName){
+
+    if (!isset($_COOKIE[$cookieName]) ) { return false;}
+
+    $secret_key=SECRET_KEY;
+    $jwt = null;
+    $jwt = $_COOKIE[$cookieName];
+
+    try {
+
+        $userData = JWT::decode($jwt, $secret_key, array('HS256'));
+        $userId = $userData->data->id;
+        return $userId;
+
+    } catch (\exception $e){
+        http_response_code(401);
+        echo json_encode(array(
+            "message" => "Access DENIED:",
+            "error" => $e->getMessage()
+        ));
+        die();
+
+    }      
 }
+
+
 
 
 

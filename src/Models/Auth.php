@@ -3,7 +3,7 @@
 namespace Src\Models;
 
 use Src\Utils\SQLDatabase;
-use \Firebase\JWT\JWT;
+use Src\Utils\TokenHandler;
 
 class Auth
 {
@@ -35,13 +35,26 @@ class Auth
 
         if  ($isUserValid) {
 
-            echo("logged in");
-            $token = $this->generateToken($results);
+            $token = TokenHandler::generateAccessToken($results);
+
+            TokenHandler::generateRefeshToken($results);
+
             print_r($token);
 
         } else {
-            echo("failed login");
+            http_response_code(401);
+                echo json_encode(array(
+                    "message" => "LOGIN FAILED: Valid Email and Password Required:",
+                ));
+                die();
         }
+    }
+
+    public function refreshAccessToken($data){
+
+        $token = TokenHandler::generateAccessToken(array($data));
+
+       echo $token;
     }
 
     private function isEmailTaken($email)
@@ -89,40 +102,15 @@ class Auth
         return password_verify($userPassword, $encryptedPassword);
     }
 
-    private function generateToken($data){
-
-                $id = $data[0]->id;
-                $email = $data[0]->email;
-
-
-                $secret_key = SECRET_KEY;
-                $issuer_claim = THE_ISSUER; // this can be the server name
-                $audience_claim = THE_AUDIENCE;
-                $issuedat_claim = time();
-                $notbefore_claim = $issuedat_claim + 1; // not  before in sec
-                $expire_claim = $issuedat_claim + 900; //expire time in sec
-                $token = array(
-                    'iss'=>$issuer_claim,
-                    'aud' => $audience_claim,
-                    'iat' => $issuedat_claim,
-                    'nbf' => $notbefore_claim,
-                    'exp' => $expire_claim,
-                    "data" => array(
-                        'id' => $id,
-                        'email' => $email,
-                    )
-                    );
-
-                $jwt = JWT::encode($token, $secret_key);
-
-                echo json_encode( array (
-                    "message" => "successful login",
-                    "jwt" => $jwt,
-                    "email" => $email,
-                    "expireAt" => $expire_claim,
-                )
-                );
-
+    public function isTokenBlacklisted($id){
+        
+        return json_decode(TokenHandler::checkBlacklist($this->database));
     }
-   
+
+
+
+
+    
+
+  
 }
