@@ -35,11 +35,15 @@ class Auth
 
         if  ($isUserValid) {
 
-            $token = TokenHandler::generateAccessToken($results);
+            TokenHandler::generateAccessToken($results, 1800);
 
-            TokenHandler::generateRefeshToken($results);
+            TokenHandler::generateRefeshToken($results, 86400 * 30);
 
-            print_r($token);
+            echo json_encode(
+                array(
+                  "message" => "successful login",
+                  "email" => $results[0]->email,                )
+              );
 
         } else {
             http_response_code(401);
@@ -50,9 +54,23 @@ class Auth
         }
     }
 
+    public function logoutUser(){
+
+            $data[] = (object)array( 'id' => 0, 'email' => "");
+
+            TokenHandler::generateAccessToken($data, -1800);
+            TokenHandler::generateRefeshToken($data, -1800);
+            
+            echo json_encode(
+                array(
+                  "message" => "logged out",
+                )
+              );
+    }
+
     public function refreshAccessToken($data){
 
-        $token = TokenHandler::generateAccessToken(array($data));
+        $token = TokenHandler::generateAccessToken(array($data), 1800);
 
        echo $token;
     }
@@ -78,7 +96,7 @@ class Auth
             $sql,
             [
                 'email' => $data['email'],
-                'password' => $data['password'],
+                'password' => $data['passwordHash'],
             ]
         );
     }

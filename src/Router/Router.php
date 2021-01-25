@@ -12,18 +12,23 @@ class Router {
     private $routes = [
         'Login' => [
             'method' => 'POST',
-            'expression' => '/^\/login\/?$/',
+            'expression' => '/^\/api\/login\/?$/',
             'controller_method' => 'login'
         ],
         'Register' => [
             'method' => 'POST',
-            'expression' => '/^\/register\/?$/',
+            'expression' => '/^\/api\/register\/?$/',
             'controller_method' => 'register'
         ],
         'Refresh' => [
             'method' => 'POST',
-            'expression' => '/^\/refresh\/?$/',
+            'expression' => '/^\/api\/refresh\/?$/',
             'controller_method' => 'refresh'
+        ],
+        'Logout' => [
+            'method' => 'POST',
+            'expression' => '/^\/api\/logout\/?$/',
+            'controller_method' => 'logout'
         ],
         'Show-All-Boards' => [
             'method' => 'GET',
@@ -92,7 +97,7 @@ class Router {
 
 
         if (! $this->validRoute) {
-            // header("HTTP/1.1 404 Not Found");
+            header("HTTP/1.1 404 Not Found");
             exit();
         }
   

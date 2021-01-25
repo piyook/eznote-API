@@ -7,38 +7,31 @@ use \Firebase\JWT\JWT;
 class TokenHandler
 {
 
-  public static function generateAccessToken($data)
+  public static function generateAccessToken($data, $expiry)
   {
 
-    $jwt = self::generateJWT($data, 1800);
+    $jwt = self::generateJWT($data, $expiry);
 
     $cookieData = array(
       "name" => "accessToken",
       "jwt" => $jwt,
-      "expiry" => 1800
+      "expiry" => $expiry
     );
 
     self::setHttpCookie($cookieData);
     self::setTimingCookie($cookieData);
 
-    echo json_encode(
-      array(
-        "message" => "successful login",
-        "jwt" => $jwt,
-        "email" => $data[0]->email
-      )
-    );
   }
 
-  public static function generateRefeshToken($data)
+  public static function generateRefeshToken($data, $expiry)
   {
 
-    $jwt = self::generateJWT($data, 86400 * 30);
+    $jwt = self::generateJWT($data, $expiry);
 
     $cookieData = array(
       "name" => "refreshToken",
       "jwt" => $jwt,
-      "expiry" => 86400 * 30
+      "expiry" => $expiry
     );
 
     self::setHttpCookie($cookieData);

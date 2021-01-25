@@ -21,19 +21,6 @@ header("Access-Control-Allow-Headers: Content-Type, Origin, Accept, Pragma, Acce
 $router = new Router;
 $auth = new AuthController;
 
-/// http cookie test ///
-
-// $cookie_name = "accessToken";
-
-// if(!isset($_COOKIE[$cookie_name])) {
-//     echo "Cookie named '" . $cookie_name . "' is not set!";
-//   } else {
-//     echo "Cookie '" . $cookie_name . "' is set!<br>";
-//     echo "Value is: " . $_COOKIE[$cookie_name];
-//   }
-
-  ///////////////////
-
 $methodName = $router->validRoute['controller_method'];
 
 if(isAuthSetup($methodName)) {
@@ -52,7 +39,8 @@ if(isAuthSetup($methodName)) {
 }
 
 function isAuthSetup($methodName){
-  return $methodName === 'login' || $methodName === 'register' || $methodName=="refresh";
+  $auth_path = ['login', 'register', 'refresh', 'logout']; 
+  return in_array($methodName, $auth_path);
 }
 
 
