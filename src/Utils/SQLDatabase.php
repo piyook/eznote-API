@@ -28,6 +28,7 @@ class SQLDatabase {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         } catch (\PDOException $e) {
 
+            http_response_code(503);
             echo $e->getMessage(); // for testing only remove in production
 
             echo ("<h1><center>Sorry - Unable To Connect To The Server At This Time. <br>Please Try Again Later</center></h1>");

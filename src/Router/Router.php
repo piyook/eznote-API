@@ -83,6 +83,8 @@ class Router {
     function __construct() {
 
         $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $this->uri = str_replace(ROOT_URL, "", $this->uri);
+        
         $this->requestMethod = $_SERVER["REQUEST_METHOD"];
         $this->uriParts = explode( '/', $this->uri );
 
