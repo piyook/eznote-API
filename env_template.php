@@ -13,5 +13,6 @@ define('SECRET_KEY', '');
 define('THE_ISSUER','');
 define('THE_AUDIENCE','');
 
-
+//Enter root url - for local development can use localhost details
+define('ROOT_URL', '');
 ?>

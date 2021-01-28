@@ -20,7 +20,11 @@ class Auth
     public function registerUser($data)
     {
         if ($this->isEmailTaken($data['email'])) {
-            return;
+            
+            echo json_encode(array(
+                "message" => "ERROR",
+            ));
+            die();
         }
 
         $this->addToDatabase($data);
@@ -37,7 +41,7 @@ class Auth
 
             TokenHandler::generateAccessToken($results, 1800);
 
-            TokenHandler::generateRefeshToken($results, 86400 * 30);
+            TokenHandler::generateRefreshToken($results, 86400 * 30);
 
             echo json_encode(
                 array(
@@ -46,9 +50,9 @@ class Auth
               );
 
         } else {
-            http_response_code(401);
+            // http_response_code(401);
                 echo json_encode(array(
-                    "message" => "LOGIN FAILED: Valid Email and Password Required:",
+                    "message" => "ERROR",
                 ));
                 die();
         }
@@ -59,7 +63,7 @@ class Auth
             $data[] = (object)array( 'id' => 0, 'email' => "");
 
             TokenHandler::generateAccessToken($data, -1800);
-            TokenHandler::generateRefeshToken($data, -1800);
+            TokenHandler::generateRefreshToken($data, -1800);
             
             echo json_encode(
                 array(

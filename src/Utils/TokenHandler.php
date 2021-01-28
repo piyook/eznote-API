@@ -23,7 +23,7 @@ class TokenHandler
 
   }
 
-  public static function generateRefeshToken($data, $expiry)
+  public static function generateRefreshToken($data, $expiry)
   {
 
     $jwt = self::generateJWT($data, $expiry);
@@ -74,7 +74,7 @@ class TokenHandler
       'expires' => time() + $payload['expiry'],
       'path' => '/',
       'domain' => false,
-      'secure' => false,
+      'secure' => true,
       'httponly' => true,
       'samesite' => 'Strict',
     ]);
@@ -87,7 +87,7 @@ class TokenHandler
       'expires' => time() + $payload['expiry'],
       'path' => '/',
       'domain' => false,
-      'secure' => false,
+      'secure' => true,
       'httponly' => false,
       'samesite' => 'Strict',
     ]);
